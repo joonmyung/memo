@@ -1,69 +1,259 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Welcome to Firebase Hosting</title>
-    <style media="screen">
-      body {
-        font-family: Roboto, Arial, sans-serif;
-        background: #ECEFF1;
-        color: rgba(0,0,0,0.87);
-      }
 
-      a {
-        color: rgb(3,155,229);
-      }
+<head>
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-      #message {
-        max-width: 400px;
-        margin: 40px auto;
-        box-shadow: 0 1px 3px 0 rgba(0,0,0,0.2),0 1px 1px 0 rgba(0,0,0,0.14),0 2px 1px -1px rgba(0,0,0,0.12);
-        border-radius: 2px;
-        background: white;
-        padding: 16px 24px;
-      }
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
 
-      #message h1 {
-        font-size: 22px;
-        font-weight: 500;
-        text-align: center;
-        margin: 0 0 16px;
-      }
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
 
-      #message p {
-        font-weight: 300;
-        line-height: 150%;
-      }
+<body>
 
-      #message ul {
-        list-style: none;
-        margin: 16px 0 0;
-        padding: 0;
-        text-align: center;
-      }
+    <!-- Navbar goes here -->
+    <nav class="light-blue lighten-1" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Memo</a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="#">Logout</a></li>
+            </ul>
 
-      #message li a {
-        display: inline-block;
-        padding: 8px;
-        text-transform: uppercase;
-        text-decoration: none;
-        font-weight: 500;
-        background: rgb(3,155,229);
-        color: white;
-        border: 1px solid rgb(3,155,229);
-        border-radius: 3px;
-        font-size: 14px;
-        box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h1>Welcome to Firebase Hosting</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <ul>
-        <li><a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a></li>
-      </ul>
+            <ul id="nav-mobile" class="side-nav">
+                <li><a href="#">Logout</a></li>
+            </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+        </div>
+    </nav>
+
+    <!-- Page Layout here -->
+    <div class="container">
+        <!-- Page Content goes here -->
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">mode_edit</i>
+                        <textarea id="icon_prefix2" class="materialize-textarea"></textarea>
+                        <label for="icon_prefix2">메모를 입력하세요.</label>
+                    </div>
+                </div>
+
+                <div class="file-field input-field col s8">
+                    <div class="btn">
+                        <span>File</span>
+                        <input type="file">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+
+                <div class="col s4">
+                    <a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a>
+                </div>
+            </form>
+        </div>
+
+
+        <div class="card small">
+            <div class="card-image waves-effect waves-block waves-light">
+                <img class="activator" src="http://materializecss.com/images/office.jpg">
+            </div>
+            <div class="card-content">
+                <span class="card-title activator grey-text text-darken-4">Card Title<i class="material-icons right">more_vert</i></span>
+            </div>
+            <div class="card-reveal">
+                <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
+                <p>Here is some more information about this product that is only revealed once clicked on.</p>
+            </div>
+        </div>
     </div>
-  </body>
+
+
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/3.6.8/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyB5WqZb8KdRKmGUetdyTyvAoH0WD0UrU8Y",
+            authDomain: "jm-memo.firebaseapp.com",
+            databaseURL: "https://jm-memo.firebaseio.com",
+            storageBucket: "jm-memo.appspot.com",
+            messagingSenderId: "341307251050",
+
+        };
+        firebase.initializeApp(config);
+        // Get a reference to the storage service, which is used to create references in your storage bucket
+        var storage = firebase.storage();
+        // Create a storage reference from our storage service
+        var storageRef = storage.ref();
+
+        auth = firebase.auth();
+        database = firebase.database();
+        var authProvider = new firebase.auth.GoogleAuthProvider();
+
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                // 인증 성공부
+                console.log("success");
+                console.log(user);
+                // 메모리스트 출력
+                userInfo = user;
+                get_memo_list();
+            } else {
+                // 인증 실패부
+                auth.signInWithPopup(authProvider);
+            }
+        });
+
+        function get_memo_list() {
+            console.log(userInfo.uid);
+            var memoRef = database.ref('memos/' + userInfo.uid);
+
+            memoRef.on('child_added', on_child_added);
+            memoRef.on('child_changed', function(data) {
+                var key = data.key;
+                var txt = data.val().txt;
+                var title = txt.substr(0, txt.indexOf('\n'));
+                $("#" + key + " > .title").text(title);
+                $("#" + key + " > .txt").text(txt);
+            });
+        }
+
+        function on_child_added(data) {
+            /*
+                {
+                    txt : '메모에 본문',
+                    updateDate : '업데이트 날짜',
+                    createDate : '생성한 날짜 '
+
+                }
+            */
+            var key = data.key;
+            var memoData = data.val();
+            var txt = memoData.txt;
+            var title = txt.substr(0, txt.indexOf('\n'));
+            var firstTxt = txt.substr(0, 1);
+
+            var html =
+                "<li id='" + key + "' class=\"collection-item avatar\" onclick=\"fn_get_data_one(this.id);\">" +
+                "<i class=\"material-icons circle red\">" + firstTxt + "</i>" +
+                "<span class=\"title\">" + title + "</span>" +
+                "<p class='txt'>" + txt + "<br>" +
+                "</p>" +
+                "<a href=\"#!\" onclick=\"fn_delete_data('" + key + "')\"class=\"secondary-content\"><i class=\"material-icons\">delete</i></a>" +
+                "</li>";
+            $(".collection").append(html);
+        }
+
+        function fn_get_data_one(key) {
+            selectedKey = key;
+            var memoRef = database.ref('memos/' + userInfo.uid + '/' + key)
+                .once('value').then(function(snapshot) {
+                    $(".textarea").val(snapshot.val().txt);
+                });
+        }
+
+        function fn_delete_data(key) {
+            if (!confirm('삭제하시겠습니까?')) {
+                return;
+            }
+            var memoRef = database.ref('memos/' + userInfo.uid + '/' + key);
+            memoRef.remove();
+            $("#" + key).remove();
+            initMemo();
+        }
+
+        function save_data() {
+            var memoRef = database.ref('memos/' + userInfo.uid);
+            var txt = $(".textarea").val();
+            if (txt == '') {
+                return;
+            }
+            if (selectedKey) {
+                memoRef = database.ref('memos/' + userInfo.uid + '/' + selectedKey);
+                memoRef.update({
+                    txt: txt,
+                    createDate: new Date().getTime(),
+                    updateDate: new Date().getTime()
+                });
+            } else {
+                //push
+                selectedKey = memoRef.push({
+                    txt: txt,
+                    createDate: new Date().getTime()
+                }).key;
+            }
+        }
+
+        function initMemo() {
+            $('.textarea').val('');
+            selectedKey = null;
+
+        }
+        $(function() {
+            $(".textarea").blur(function() {
+                save_data();
+            });
+        });
+
+
+
+
+        function file_upload(file) {
+            // Create the file metadata
+            var metadata = {
+                contentType: 'image/jpeg'
+            };
+
+            // Upload file and metadata to the object 'images/mountains.jpg'
+            var uploadTask = storageRef.child('memo-images/' + file.name).put(file, metadata);
+
+            // Listen for state changes, errors, and completion of the upload.
+            uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+                function(snapshot) {
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                    switch (snapshot.state) {
+                        case firebase.storage.TaskState.PAUSED: // or 'paused'
+                            console.log('Upload is paused');
+                            break;
+                        case firebase.storage.TaskState.RUNNING: // or 'running'
+                            console.log('Upload is running');
+                            break;
+                    }
+                },
+                function(error) {
+                    switch (error.code) {
+                        case 'storage/unauthorized':
+                            // User doesn't have permission to access the object
+                            break;
+
+                        case 'storage/canceled':
+                            // User canceled the upload
+                            break;
+
+                        case 'storage/unknown':
+                            // Unknown error occurred, inspect error.serverResponse
+                            break;
+                    }
+                },
+                function() {
+                    // Upload completed successfully, now we can get the download URL
+                    var downloadURL = uploadTask.snapshot.downloadURL;
+                });
+
+            return downloadURL;
+        }
+    </script>
+
+</body>
+
 </html>

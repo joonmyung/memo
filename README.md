@@ -1,16 +1,20 @@
-# memo
+# Firebase를 이용한 Memo Web/App 만들어보기
 
-## Git Repository 
-1. Markdown 기본 문법 확인
-2. 설명 시작
+## Git Repository
 
-## Firebase CLI 
+1. Markdown 기본 문법 확인 -> VS Code에서 확인 가능
+1. 설명 시작
 
-[
-Add Firebase to your JavaScript Project ](https://firebase.google.com/docs/web/setup)
+## Firebase CLI
+
+[Add Firebase to your JavaScript Project](https://firebase.google.com/docs/web/setup)
 
 ## HTML
 
 ## Javascript
 
 ## Deploy
+
+# Spec
+
+1. 
