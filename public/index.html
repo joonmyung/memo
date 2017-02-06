@@ -3,7 +3,7 @@
 
 <head>
     <!--Import Google Icon Font-->
-    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
@@ -15,7 +15,7 @@
 <body>
 
     <!-- Navbar goes here -->
-    <nav class="light-blue lighten-1" role="navigation">
+    <nav class="teal lighten-2" role="navigation">
         <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Memo</a>
             <ul class="right hide-on-med-and-down">
                 <li><a href="#">Logout</a></li>
@@ -52,6 +52,7 @@
             </form>
         </div>
 
+        <hr/>
 
         <div class="card small">
             <div class="card-image waves-effect waves-block waves-light">
@@ -96,7 +97,6 @@
         auth.onAuthStateChanged(function(user) {
             if (user) {
                 // 인증 성공부
-                console.log("success");
                 console.log(user);
                 // 메모리스트 출력
                 userInfo = user;
