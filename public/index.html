@@ -112,6 +112,7 @@
             var memoRef = database.ref('memos/' + userInfo.uid);
 
             memoRef.on('child_added', on_child_added);
+
             memoRef.on('child_changed', function(data) {
                 var key = data.key;
                 var txt = data.val().txt;
